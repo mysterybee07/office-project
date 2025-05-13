@@ -7,9 +7,8 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/mysterybee07/office-project-setup/internal/config"
 )
-
-var secretKey = []byte("secret")
 
 type JWTSignedDetails struct {
 	Email string
@@ -18,7 +17,10 @@ type JWTSignedDetails struct {
 }
 
 func GenerateJWTToken(email string, role string) (string, string, error) {
-
+	secretKey, err := config.LoadAuthConfig()
+	if err != nil {
+		return "", "", err
+	}
 	expirationTime := time.Now().Add(time.Hour * 72).Unix()
 	claims := &JWTSignedDetails{
 		Email: email,
@@ -68,6 +70,10 @@ func SetToken(ctx *gin.Context, accessToken string, refreshToken string) {
 }
 
 func ValidateToken(signedToken string, isRefreshToken bool) (*JWTSignedDetails, error) {
+	secretKey, err := config.LoadAuthConfig()
+	if err != nil {
+		return nil, err
+	}
 	token, err := jwt.ParseWithClaims(signedToken, &JWTSignedDetails{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
