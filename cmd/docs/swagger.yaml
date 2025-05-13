@@ -1,0 +1,76 @@
+basePath: /api/v1
+definitions:
+  request.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  response.LoginResponse:
+    properties:
+      access_token:
+        type: string
+      email:
+        example: user@example.com
+        type: string
+      message:
+        example: Login successful
+        type: string
+      refresh_token:
+        type: string
+      role:
+        example: admin
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Learning swagger api.
+  title: Office Project API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login with credentials
+      parameters:
+      - description: User credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/request.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login user
+      tags:
+      - auth
+swagger: "2.0"

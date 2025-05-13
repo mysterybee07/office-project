@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 var secretKey = []byte("secret")
@@ -45,8 +46,8 @@ func GenerateJWTToken(email string, role string) (string, string, error) {
 	return token, refreshToken, nil
 }
 
-func SetToken(w http.ResponseWriter, accessToken string, refreshToken string) {
-	http.SetCookie(w, &http.Cookie{
+func SetToken(ctx *gin.Context, accessToken string, refreshToken string) {
+	http.SetCookie(ctx.Writer, &http.Cookie{
 		Name:     "access_token",
 		Value:    accessToken,
 		Path:     "/",
@@ -55,7 +56,7 @@ func SetToken(w http.ResponseWriter, accessToken string, refreshToken string) {
 		Secure:   false,
 		SameSite: http.SameSiteStrictMode,
 	})
-	http.SetCookie(w, &http.Cookie{
+	http.SetCookie(ctx.Writer, &http.Cookie{
 		Name:     "refresh_token",
 		Value:    refreshToken,
 		Path:     "/",

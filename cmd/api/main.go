@@ -7,6 +7,11 @@ import (
 	"github.com/mysterybee07/office-project-setup/internal/api"
 )
 
+// @title       Office Project API
+// @version     1.0
+// @description Learning swagger api.
+// @host        localhost:8080
+// @BasePath    /api/v1
 func main() {
 	server := api.NewServer()
 

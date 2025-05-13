@@ -5,17 +5,27 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mysterybee07/office-project-setup/internal/api/request"
+	"github.com/mysterybee07/office-project-setup/internal/api/response"
 	"github.com/mysterybee07/office-project-setup/internal/auth"
 	"github.com/mysterybee07/office-project-setup/internal/model"
 	"gorm.io/gorm"
 )
 
+// @Summary Login user
+// @Description Login with credentials
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param credentials body request.LoginRequest true "User credentials"
+// @Success 200 {object} response.LoginResponse
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /auth/login [post]
 func Login(db *gorm.DB) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var credentials struct {
-			Email    string `json:"email" binding:"required,email"`
-			Password string `json:"password" binding:"required"`
-		}
+		var credentials request.LoginRequest
 
 		if err := ctx.ShouldBindJSON(&credentials); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{
@@ -48,6 +58,8 @@ func Login(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
+		auth.SetToken(ctx, accessToken, refreshToken)
+
 		// Save refresh token in database
 		tokenRecord := model.Auth{
 			UserId: user.ID,
@@ -58,12 +70,12 @@ func Login(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		ctx.JSON(http.StatusOK, gin.H{
-			"email":         user.Email,
-			"role":          user.Role,
-			"access_token":  accessToken,
-			"refresh_token": refreshToken,
-			"message":       "Login successful",
+		ctx.JSON(http.StatusOK, response.LoginResponse{
+			Email:        user.Email,
+			Role:         user.Role,
+			AccessToken:  accessToken,
+			RefreshToken: refreshToken,
+			Message:      "Login successful",
 		})
 	}
 }
