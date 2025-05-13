@@ -1,10 +1,10 @@
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS public.users (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'user',
     email TEXT NOT NULL UNIQUE,
-    role varchar(50),
     password TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ
 );
-

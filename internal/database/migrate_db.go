@@ -12,7 +12,6 @@ import (
 	"github.com/mysterybee07/office-project-setup/internal/config"
 )
 
-// MigrateDB performs database migrations from the migrations directory
 func MigrateDB(databaseURL string) error {
 	m, err := migrate.New("file://internal/database/migrations", databaseURL)
 	if err != nil {
@@ -23,7 +22,6 @@ func MigrateDB(databaseURL string) error {
 	// Handle dirty database state
 	currentVersion, dirty, err := m.Version()
 	if err != nil {
-		// If no version is found, this is expected for a new database
 		if err == migrate.ErrNilVersion {
 			log.Println("No existing migration version found")
 		} else {
@@ -31,7 +29,6 @@ func MigrateDB(databaseURL string) error {
 		}
 	}
 
-	// If database is in a dirty state, attempt to reset
 	if dirty {
 		log.Println("Database is in a dirty state. Attempting to reset.")
 
@@ -65,7 +62,6 @@ func MigrateDB(databaseURL string) error {
 	return nil
 }
 
-// ForceCleanMigration provides a method to manually clean up migration state
 func ForceCleanMigration(databaseURL string) error {
 	m, err := migrate.New("file://internal/database/migrations", databaseURL)
 	if err != nil {
@@ -107,12 +103,10 @@ func RollbackMigration(databaseURL string) error {
 	return nil
 }
 
-// MigrateFromConfig performs database migrations using the provided database configuration
 func MigrateFromConfig(cfg *config.DatabaseConfig) error {
 	return MigrateDB(cfg.GetDatabaseURL())
 }
 
-// RollbackFromConfig rolls back the last migration using the provided database configuration
 func RollbackFromConfig(cfg *config.DatabaseConfig) error {
 	return RollbackMigration(cfg.GetDatabaseURL())
 }

@@ -11,7 +11,6 @@ import (
 	"github.com/mysterybee07/office-project-setup/internal/api/route"
 	"github.com/mysterybee07/office-project-setup/internal/config"
 	"github.com/mysterybee07/office-project-setup/internal/database"
-	"gorm.io/gorm"
 )
 
 type Server struct {
@@ -37,7 +36,7 @@ func NewServer() *http.Server {
 
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", srv.port),
-		Handler:      route.SetupRouter(&gorm.DB{}),
+		Handler:      route.SetupRouter(srv.db.GetDB()),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,

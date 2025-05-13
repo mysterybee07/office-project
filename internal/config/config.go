@@ -43,3 +43,14 @@ func (c *DatabaseConfig) GetDatabaseURL() string {
 		c.Schema,
 	)
 }
+
+func (cfg *DatabaseConfig) GetDSN() string {
+	return fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+		cfg.Host,
+		cfg.Username,
+		cfg.Password,
+		cfg.Name,
+		cfg.Port,
+	)
+}

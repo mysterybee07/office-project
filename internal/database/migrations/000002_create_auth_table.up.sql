@@ -1,7 +1,0 @@
-
-CREATE TABLE IF NOT EXISTS auth.auth (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
-    token TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT now()
-);
